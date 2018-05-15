@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+    jira:
+        image: blacklabelops/jira:7.9.2
+        env_file:
+          - jira.env
+        networks:
+            - jiranet
+        depends_on:
+            - postgresql
+        volumes:
+            - jiradata:/var/atlassian/jira
+        ports:
+            - '8081:8080'
+
+    postgresql:
+        image: postgres:9.6.9-alpine
+        env_file:
+          - postgres.env
+        networks:
+              - jiranet
+        volumes:
+            - postgresqldata:/var/lib/postgresql/data
+
+
+volumes:
+    jiradata:
+        external: false
+    postgresqldata:
+        external: false
+
+networks:
+    jiranet:
+        driver: bridge
+
