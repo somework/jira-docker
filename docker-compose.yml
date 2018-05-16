@@ -4,7 +4,7 @@ services:
     jira:
         image: blacklabelops/jira:7.9.2
         env_file:
-          - jira.env
+          - env/jira.env
         networks:
             - jiranet
         depends_on:
@@ -17,7 +17,7 @@ services:
     postgresql:
         image: postgres:9.6.9-alpine
         env_file:
-          - postgres.env
+          - env/postgres.env
         networks:
               - jiranet
         volumes:
