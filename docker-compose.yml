@@ -35,7 +35,7 @@ services:
             - '80:80'
             - '443:443'
         env_file:
-            - .env/.nginx.env
+            - .nginx.env
 
     letsencrypt:
         image: blacklabelops/letsencrypt
@@ -43,7 +43,7 @@ services:
             - letsencrypt_certs:/etc/letsencrypt
             - letsencrypt_challenges:/var/www/letsencrypt
         env_file:
-            - .env/.letsencrypt.env
+            - .letsencrypt.env
 
     cron:
         image: blacklabelops/jobber:docker
@@ -60,8 +60,8 @@ volumes:
         external: false
     letsencrypt_challenges:
         external: false
-    letsencrypt_certs:
-        external: false
+#    letsencrypt_certs:
+#        external: true
 
 networks:
     jiranet:
