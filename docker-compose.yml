@@ -4,30 +4,63 @@ services:
     jira:
         image: blacklabelops/jira:7.9.2
         env_file:
-          - env/jira.env
+            - .jira.env
         networks:
             - jiranet
         depends_on:
             - postgresql
         volumes:
             - jiradata:/var/atlassian/jira
-        ports:
-            - '8081:8080'
 
     postgresql:
         image: postgres:9.6.9-alpine
         env_file:
-          - env/postgres.env
+            - .postgres.env
         networks:
-              - jiranet
+            - jiranet
         volumes:
             - postgresqldata:/var/lib/postgresql/data
+
+    nginx:
+        image: blacklabelops/nginx
+        depends_on:
+            - jira
+            - letsencrypt
+        volumes:
+            - letsencrypt_certs:/etc/letsencrypt
+            - letsencrypt_challenges:/var/www/letsencrypt
+        networks:
+            - jiranet
+        ports:
+            - '80:80'
+            - '443:443'
+        env_file:
+            - .env/.nginx.env
+
+    letsencrypt:
+        image: blacklabelops/letsencrypt
+        volumes:
+            - letsencrypt_certs:/etc/letsencrypt
+            - letsencrypt_challenges:/var/www/letsencrypt
+        env_file:
+            - .env/.letsencrypt.env
+
+    cron:
+        image: blacklabelops/jobber:docker
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        env_file:
+          - .cron.env
 
 
 volumes:
     jiradata:
         external: false
     postgresqldata:
+        external: false
+    letsencrypt_challenges:
+        external: false
+    letsencrypt_certs:
         external: false
 
 networks:

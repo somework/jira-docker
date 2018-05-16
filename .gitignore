@@ -1,3 +1,6 @@
 .idea
-env/jira.env
-env/postgres.env
+.jira.env
+.postgres.env
+.nginx.env
+.letsencrypt.env
+.cron.env
