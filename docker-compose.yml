@@ -1,5 +1,6 @@
-version: '2'
+version: '3.4'
 
+# Extract logs out
 services:
     jira:
         image: blacklabelops/jira:7.9.2
@@ -9,7 +10,10 @@ services:
             - jiranet
         depends_on:
             - postgresql
+            - postfix
         volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
             - jiradata:/var/atlassian/jira
 
     postgresql:
@@ -19,14 +23,18 @@ services:
         networks:
             - jiranet
         volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
             - postgresqldata:/var/lib/postgresql/data
 
+    # Front App
     nginx:
         image: blacklabelops/nginx
         depends_on:
             - jira
-            - letsencrypt
         volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
             - letsencrypt_certs:/etc/letsencrypt
             - letsencrypt_challenges:/var/www/letsencrypt
         networks:
@@ -39,7 +47,11 @@ services:
 
     letsencrypt:
         image: blacklabelops/letsencrypt
+        depends_on:
+            - nginx
         volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
             - letsencrypt_certs:/etc/letsencrypt
             - letsencrypt_challenges:/var/www/letsencrypt
         env_file:
@@ -48,10 +60,22 @@ services:
     cron:
         image: blacklabelops/jobber:docker
         volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
             - /var/run/docker.sock:/var/run/docker.sock
         env_file:
           - .cron.env
 
+    postfix:
+        image: juanluisbaptiste/postfix:latest
+        networks:
+            - jiranet
+        restart: always
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+        env_file:
+            - .smtp.env
 
 volumes:
     jiradata:
@@ -60,8 +84,10 @@ volumes:
         external: false
     letsencrypt_challenges:
         external: false
-#    letsencrypt_certs:
-#        external: true
+    letsencrypt_certs:
+        external: false
+        name: letsencrypt_certs
+
 
 networks:
     jiranet:
