@@ -5,3 +5,4 @@
 .letsencrypt.env
 .cron.env
 .smtp.env
+backups
