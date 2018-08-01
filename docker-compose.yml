@@ -8,6 +8,7 @@ services:
             - .jira.env
         networks:
             - jiranet
+            - postgresnet
         depends_on:
             - postgresql
             - postfix
@@ -22,7 +23,7 @@ services:
         env_file:
             - .postgres.env
         networks:
-            - jiranet
+            - postgresnet
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /etc/timezone:/etc/timezone:ro
@@ -92,5 +93,7 @@ volumes:
 
 networks:
     jiranet:
+        driver: bridge
+    postgresnet:
         driver: bridge
 
