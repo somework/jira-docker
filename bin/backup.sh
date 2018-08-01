@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-docker run -d \
+docker run \
+    --rm \
     --name volumerize \
     -v jiradata:/source/jiradata:ro \
     -v postgresqldata:/source/postgresqldata:ro \
@@ -10,4 +11,4 @@ docker run -d \
     -v cache_volume:/volumerize-cache \
     -e "VOLUMERIZE_SOURCE=/source" \
     -e "VOLUMERIZE_TARGET=file:///backup" \
-    blacklabelops/volumerize
+    blacklabelops/volumerize backup
