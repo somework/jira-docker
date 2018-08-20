@@ -11,4 +11,5 @@ docker run \
     -v cache_volume:/volumerize-cache \
     -e "VOLUMERIZE_SOURCE=/source" \
     -e "VOLUMERIZE_TARGET=file:///backup" \
+    -e "VOLUMERIZE_FULL_IF_OLDER_THAN=7D" \
     blacklabelops/volumerize backup
