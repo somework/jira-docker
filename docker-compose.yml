@@ -3,7 +3,7 @@ version: '3.4'
 # Extract logs out
 services:
     jira:
-        image: blacklabelops/jira:7.11.2
+        image: blacklabelops/jira:7.12.1
         env_file:
             - .jira.env
         networks:
