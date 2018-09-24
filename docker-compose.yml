@@ -40,7 +40,9 @@ services:
             - letsencrypt_certs:/etc/letsencrypt
             - letsencrypt_challenges:/var/www/letsencrypt
         networks:
-            - jiranet
+            jiranet:
+                aliases:
+                    - "${JIRA_PROXY_NAME:-jira.example.ru}"
         ports:
             - '80:80'
             - '443:443'
@@ -72,7 +74,7 @@ services:
         image: juanluisbaptiste/postfix:latest
         networks:
             - jiranet
-        restart: always
+        restart: unless-stopped
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /etc/timezone:/etc/timezone:ro

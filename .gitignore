@@ -6,3 +6,4 @@
 .cron.env
 .smtp.env
 backups
+.env
